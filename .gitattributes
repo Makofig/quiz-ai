@@ -1,0 +1,82 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Files with Windows line endings should be converted to LF
+*.txt text eol=lf
+*.md text eol=lf
+*.rst text eol=lf
+*.log text eol=lf
+*.csv text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.env text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.html text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.rar binary
+*.7z binary
+*.exe binary
+*.dll binary
+*.pyc binary
+*.pyd binary
+*.whl binary
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Node modules
+node_modules/
+
+# Next.js build
+.next/
+out/
+
+# IDE (optional, usually local)
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment and Secrets
+.env
+.env.local
+.env.*.local
+
+# Database files (local development)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
