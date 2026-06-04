@@ -2,6 +2,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # Models de Ollama 
+    OLLAMA_MODEL: str = "gemma"
+    
     # App
     APP_NAME: str = "AI Quiz Platform"
     APP_VERSION: str = "0.1.0"

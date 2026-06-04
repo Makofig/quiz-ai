@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from datetime import datetime, timezone, timedelta
+from app.core.config import settings
 from typing import Optional
 
 from app.core.database import get_db
@@ -68,7 +69,7 @@ async def create_exam(
             quiz_type=request.exam_type.value,
             difficulty=request.difficulty,
             count=request.questions,
-            model="gemma", # Default to gemma for better question quality in open-source version 
+            model=settings.OLLAMA_MODEL, # Default to gemma for better question quality in open-source version 
         )
         raw_questions = quiz_data.get("questions", [])
         print(f"Examen: {request.topic}")
