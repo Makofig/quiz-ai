@@ -35,7 +35,7 @@ class Exam(Base):
     user_id: Mapped[str] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
+        nullable=True,
     )
 
     title: Mapped[str] = mapped_column(
@@ -115,7 +115,7 @@ class ExamAttempt(Base):
     user_id: Mapped[str] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
+        nullable=True,
     )
 
     started_at: Mapped[datetime | None] = mapped_column(

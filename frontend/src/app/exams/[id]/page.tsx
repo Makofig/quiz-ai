@@ -3,6 +3,7 @@
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Header from '@/components/Header';
+import { MarkdownMath } from '@/components/MarkdownMath';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
@@ -202,6 +203,7 @@ export default function ExamPlayerPage() {
   const questions = attempt.questions;
   const current = questions[currentIndex];
   const currentAnswer = answers[current.number];
+  const hasAnswered = currentAnswer !== undefined && currentAnswer !== null;
   const progress = ((currentIndex + (hasAnswered ? 1 : 0)) / questions.length) * 100;
   const answeredCount = Object.keys(answers).length;
   const isUrgent = timeLeft < 300;
@@ -309,7 +311,7 @@ export default function ExamPlayerPage() {
               </div>
 
               <h2 className="text-xl md:text-2xl font-semibold text-white mb-8 leading-relaxed" style={{ fontFamily: 'var(--font-display)' }}>
-                {current.question}
+                <MarkdownMath content={current.question} />
               </h2>
 
               {/* Answer options */}
@@ -333,7 +335,7 @@ export default function ExamPlayerPage() {
                             String.fromCharCode(65 + index)
                           )}
                         </div>
-                        <span className="flex-1">{option}</span>
+                        <span className="flex-1"><MarkdownMath content={option} /></span>
                       </button>
                     );
                   })}

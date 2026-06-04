@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"pnpm frontend:dev\" \"pnpm backend:dev\"",
-    "frontend:dev": "next dev",
+    "frontend:dev": "next dev --turbopack",
     "backend:dev": "cd ../backend && uvicorn app.main:app --reload",
     "build": "next build",
     "start": "next start",

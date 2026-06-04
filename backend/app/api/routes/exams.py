@@ -64,12 +64,14 @@ async def create_exam(
     try:
         quiz_data = generate_quiz(
             topic=request.topic,
+            content=None, # Open-source version does not support content input to Ollama
             quiz_type=request.exam_type.value,
             difficulty=request.difficulty,
             count=request.questions,
-            model="mistral",
+            model="gemma", # Default to gemma for better question quality in open-source version 
         )
         raw_questions = quiz_data.get("questions", [])
+        print(f"Examen: {request.topic}")
         questions = _parse_questions(raw_questions)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating exam questions: {str(e)}")
@@ -93,7 +95,7 @@ async def create_exam(
     db.add(exam)
     await db.commit()
     await db.refresh(exam)
-
+    
     return ExamCreateResponse(
         id=str(exam.id),
         title=exam.title,
@@ -346,6 +348,8 @@ async def submit_exam(
             ExamAttempt.exam_id == exam_id,
             ExamAttempt.status == "in_progress",
         )
+        .order_by(ExamAttempt.started_at.desc())
+        .limit(1)
     )
     result = await db.execute(stmt)
     attempt = result.scalar_one_or_none()
@@ -381,24 +385,43 @@ async def submit_exam(
 
         # Determine correct value
         if q["type"] == "multiple_choice":
-            correct_val = q.get("correct_option", 0)
+            correct_val = str(q.get("correct_option", 0))
         elif q["type"] == "true_false":
             correct_val = q.get("correct_answer", True)
         else:
             correct_val = q.get("reference_answer", "")
 
-        # Normalize for comparison
-        if isinstance(correct_val, str):
-            correct_norm = correct_val.strip().lower()
-        else:
-            correct_norm = correct_val
+        if q["type"] == "multiple_choice":
+            selected_norm = (
+                int(selected)
+                if selected is not None and str(selected).isdigit()
+                else None
+            )
 
-        if isinstance(selected, str):
-            selected_norm = selected.strip().lower()
-        else:
-            selected_norm = selected
+            correct_norm = int(correct_val)
 
-        is_correct = selected_norm is not None and selected_norm == correct_norm
+        elif q["type"] == "true_false":
+            selected_norm = (
+                str(selected).strip().lower()
+                if selected is not None
+                else None
+            )
+
+            correct_norm = str(correct_val).strip().lower()
+
+        else:
+            selected_norm = (
+                str(selected).strip().lower()
+                if selected is not None
+                else None
+            )
+
+            correct_norm = str(correct_val).strip().lower()
+
+        is_correct = (
+            selected_norm is not None
+            and selected_norm == correct_norm
+        )
 
         if is_correct:
             correct += 1
@@ -513,17 +536,41 @@ async def get_exam_result(
         selected = user_answer.selected_answer if user_answer else None
         is_correct = user_answer.is_correct if user_answer else False
 
+        # if q["type"] == "multiple_choice":
+        #     correct_val = str(q.get("correct_option", 0))
         if q["type"] == "multiple_choice":
             correct_val = q.get("correct_option", 0)
+
+            options = q.get("options", [])
+
+            selected_text = (
+                options[int(selected)]
+                if selected is not None
+                and str(selected).isdigit()
+                and int(selected) < len(options)
+                else None
+            )
+
+            correct_text = (
+                options[int(correct_val)]
+                if int(correct_val) < len(options)
+                else None
+            )
         elif q["type"] == "true_false":
             correct_val = q.get("correct_answer", True)
+
+            selected_text = selected
+            correct_text = correct_val
         else:
             correct_val = q.get("reference_answer", "")
 
+            selected_text = selected
+            correct_text = correct_val
+
         entry = {
             "question": q.get("question", ""),
-            "selected_answer": selected,
-            "correct_answer": correct_val,
+            "selected_answer": selected_text,
+            "correct_answer": correct_text,
             "explanation": q.get("explanation", ""),
         }
 
