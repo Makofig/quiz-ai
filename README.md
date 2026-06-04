@@ -26,7 +26,7 @@ Sin registro. Sin contraseñas. Sin configuración compleja.
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/quiz-ai.git
+git clone https://github.com/Makofig/quiz-ai.git
 cd quiz-ai
 ```
 
@@ -223,7 +223,7 @@ MIT. Libre para uso personal, educativo y comercial.
 
 ## 🤝 Contribuir
 
-Las contribuciones son bienvenidas. Para reportar issues o sugerir mejoras, abre un [Issue en GitHub](https://github.com/tu-usuario/quiz-ai/issues).
+Las contribuciones son bienvenidas. Para reportar issues o sugerir mejoras, abre un [Issue en GitHub](https://github.com/Makofig/quiz-ai/issues).
 
 ---
 
